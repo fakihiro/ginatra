@@ -55,7 +55,7 @@ module Ginatra
 
     # The root route
     get '/' do
-      @repositories = Ginatra::RepoList.list
+      @grouped_repositories = Ginatra::RepoList.grouped_list
       erb :index
     end
 
@@ -288,6 +288,32 @@ module Ginatra
         @previous_commits = !@repo.commits(params[:ref], 10, (params[:page] - 1) * 10).empty?
       end
       erb :log
+    end
+
+    get '/repo/:group/new' do
+      @group = params[:group]
+      @name = @description = @error_message = nil
+      erb :new_repo
+    end
+
+    post '/repo/:group/' do
+      @group = params[:group]
+      @name  = params[:name]
+      @description = params[:description]
+
+      if params[:name].to_s == ""
+        @error_message = "Name can't be empty"
+        erb :new_repo
+      else
+        @repo, err = Repo.make(@name, @group, @description)
+        if err
+          @error_message = "Failuer to create : #{err}"
+          erb :new_repo
+        else
+          logger.info "Repostory #{@repo.path} created."
+          redirect  "/#{@repo.param}"
+        end
+      end
     end
 
   end # App

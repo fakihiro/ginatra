@@ -1,0 +1,21 @@
+<% title 'New Repository' %>
+
+<div class="page-header">
+  <h1>New Repository &nbsp; <small>(<%= @group %>)</small></h1>
+</div>
+
+<% if @error_message %>
+  <div class="alert alert-warning" role="alert"><%= @error_message %></div>
+<% end %>
+
+<form action="/repo/<%= @group%>/" method="post">
+  <div class="form-group">
+    <label for="repositoryName">Name</label>
+    <input value="<%= h @name%>" type="text" name="name" class="form-control" id="repositoryName" placeholder="Repository name" style="width:40%">
+  </div>
+  <div class="form-group">
+    <label for="descriptionText">Description</label>
+    <input value="<%= h @description%>" type="text" name="description" class="form-control" id="descriptionText" placeholder="Description">
+  </div>
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>

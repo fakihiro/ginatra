@@ -59,6 +59,7 @@ module Ginatra
           logger.warn "SKIPPING '#{path}' - not a git repository"
         end
       end
+      list.sort! { |a,b| a.group <=> b.group }
       list
     end
 
@@ -105,5 +106,20 @@ module Ginatra
     def self.respond_to?(sym)
       instance.respond_to?(sym) || super
     end
+
+    def self.grouped_list
+      self.instance.refresh
+      current_group = nil
+      self.instance.list.inject({}) do |grouped, repo|
+        if repo.group != current_group
+          grouped[repo.group] = []
+          current_group = repo.group
+        end
+
+        grouped[current_group] << repo
+        grouped
+      end
+    end
   end
+
 end

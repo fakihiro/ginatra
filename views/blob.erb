@@ -14,15 +14,14 @@
 
 <% blob = @repo.find_blob @blob[:oid] %>
 
-<% if blob.binary? %>
-  <% if %(gif png jpg jpeg).include? File.extname(@blob[:name])[1..-1].downcase %>
-    <a href="<%= raw_blob_url %>">
-      <img class="blob-image" src="<%= raw_blob_url %>" alt="<%= @blob[:name] %>">
-    </a>
-  <% else %>
-    <p>Binary file</p>
-    <p><img src="/img/download.svg" alt="download" class="icon"> <a href="<%= raw_blob_url %>">Download</a></p>
-  <% end %>
+<% case adhoc_file_type(blob, @blob[:name]) %>
+<% when :image %>
+  <a href="<%= raw_blob_url %>">
+    <img class="blob-image" src="<%= raw_blob_url %>" alt="<%= @blob[:name] %>">
+  </a>
+<% when :binary %>
+  <p>Binary file</p>
+  <p><img src="/img/download.svg" alt="download" class="icon"> <a href="<%= raw_blob_url %>">Download</a></p>
 <% else %>
   <div class="source-wrapper highlight">
     <%= highlight_source blob.content, @blob[:name] %>

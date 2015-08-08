@@ -1,11 +1,13 @@
 # Default config file for Ginatra
 # Settings specified in '~/.ginatra/config.yml' will take precedence over these
 git_dirs:
-  - ./repos/*
-sitename: Ginatra
-description: "My Git Repositories"
+  - ../repos/docs/*
+  - ../repos/edu/*
+  - ../repos/tools/*
+sitename: Repositories
+description: "Git Repositories"
 port: 9797
 host: localhost
 prefix: "/"
-git_clone_enabled?: true
-log_file: "~/.ginatra/ginatra.log"
+git_clone_enabled?: false
+log_file: "log/ginatra.log"

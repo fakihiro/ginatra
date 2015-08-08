@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'sprockets', '~> 3.0'
 
   # Assets
-  gem.add_dependency 'bootstrap-sass', '3.3.3'
+  gem.add_dependency 'bootstrap-sass', '~> 3.3'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

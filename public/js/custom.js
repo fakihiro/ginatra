@@ -26,7 +26,8 @@ $(function() {
     }
   }
 
-  $('#js-clone-url').click(selectText);
+  $('#js-clone-url1').click(selectText);
+  $('#js-clone-url2').click(selectText);
 
   $('.js-nav').click(function() {
     location.href = $(this).data('href');

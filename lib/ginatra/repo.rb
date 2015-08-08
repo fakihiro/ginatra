@@ -2,7 +2,7 @@ require 'rugged'
 
 module Ginatra
   class Repo
-    attr_reader :name, :param, :description
+    attr_reader :name, :param, :description, :group
 
     # Create a new repository, and sort out clever stuff including assigning
     # the param, the name and the description.
@@ -11,13 +11,36 @@ module Ginatra
     # @return [Ginatra::Repo] a repository instance
     def initialize(path)
       @repo = Rugged::Repository.new(path)
-      @param = File.split(path).last
+      @group = File.basename(File.dirname(path))
+      @param =  @group + ":" + File.split(path).last
       @name = @param
       @description = ''
       if File.exists?("#{@repo.path}description")
         @description = File.read("#{@repo.path}description").strip
         @description = '' if @description.match(/\AUnnamed repository;/)
       end
+    end
+
+    def self.make(name, group, description)
+      name += ".git"  unless name =~ /\.git$/
+      git_dir = Ginatra.load_config["git_dirs"].first
+
+      path = [File.dirname(git_dir.chop), group, name].join("/")
+      return [nil, "already exists"]  if File.exists?(path)
+
+      Rugged::Repository.init_at(path, :bare)
+
+      if description && description.size > 0
+        IO.write("#{path}/description", description.chomp + "\n")
+      end
+      [Repo.new(path), nil]
+
+    rescue => e
+      [nil, e.to_s]
+    end
+
+    def ssh_url
+      "git@" + Ginatra.load_config['host'] + ":" + @param.sub(":", "/")
     end
 
     # Return a commit corresponding to sha in the repo.

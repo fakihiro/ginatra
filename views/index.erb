@@ -1,30 +1,36 @@
 <% title 'Repositories' %>
 
 <div class="page-header">
-  <h1>Repositories <small><%= h Ginatra.config.description %></small></h1>
-  <% if Ginatra.config.git_clone_enabled? && @repositories.any? %>
-    <div class="text-muted clone-hint">
-      To clone one of these repositories, install git, and run:
-      git clone <%= url %><strong>repo-name</strong>
-    </div>
-  <% end %>
+  <h1>Repositories</h1>
 </div>
 
-<% if @repositories.size > 10 %>
-  <div class="row filter">
-    <div class="col-md-12">
-      <input type="text" class="form-control js-filter-query" placeholder="Filter...">
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<% @grouped_repositories.each do |group, list| %>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="<%= 'heading_' + group %>">
+      <div class="row">
+        <h4 class="panel-title col-md-10">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="<%= '#collapse_' + group %>" aria-expanded="false" aria-controls="<%= 'collapse_' + group %>">
+            <%= group %>
+          </a>
+        </h4>
+        <div class="col-md-2">
+          <a href="/repo/<%= group %>/new">New repository</a>
+        </div>
+      </div>
+    </div>
+    <div id="<%= 'collapse_' + group %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="<%= 'heading_' + group %>">
+      <div class="panel-body">
+        <% list.each do |repo| %>
+        <a href="<%= prefix_url(repo.param) %>">
+          <h2>
+            <%# = empty_description_hint_for(repo) %>
+            <%= repo.name %> <small><%= h repo.description %></small>
+          </h2>
+        </a>
+        <% end %>
+      </div>
     </div>
   </div>
-<% end %>
-
-<div class="list-group repo-list js-repolist">
-  <% @repositories.each do |repo| %>
-    <a href="<%= prefix_url(repo.param) %>" class="list-group-item">
-      <h2>
-        <%= empty_description_hint_for(repo) %>
-        <%= repo.name %> <small><%= h repo.description %></small>
-      </h2>
-    </a>
   <% end %>
 </div>

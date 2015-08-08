@@ -171,11 +171,10 @@ module Ginatra
       lexer     = Rouge::Lexers::Diff.new
 
       source   = lines.join
-      encoding = source.encoding
       source   = source.force_encoding(Encoding::UTF_8)
+      source   = source.encode(Encoding::UTF_8, :invalid => :replace, :undef => :replace, :replace => '?')
 
       hd = formatter.format lexer.lex(source)
-      hd.force_encoding encoding
     end
 
     # Highlights blob source
@@ -244,6 +243,22 @@ module Ginatra
     # @return [String] the hostname of the server. Respects HTTP-X-Forwarded-For
     def hostname
       (request.env['HTTP_X_FORWARDED_SERVER'] =~ /[a-z]*/) ? request.env['HTTP_X_FORWARDED_SERVER'] : request.env['HTTP_HOST']
+    end
+
+    def adhoc_file_type(blob, filename)
+      if ! blob.binary?
+        :text
+      else
+        ext = File.extname(filename)[1..-1]
+        ext = ext ? ext.downcase : ""
+        if %(gif png jpg jpeg).include? ext
+          :image
+        elsif %(pdf key zip xls doc ppt).include? ext
+          :binary
+        else
+          :text
+        end
+      end
     end
   end
 end

@@ -1,12 +1,11 @@
 <div class="page-header">
   <h1>
-    <%= empty_description_hint_for(repo) %>
     <a href="<%= prefix_url(repo.param) %>"><%= repo.name %></a>
     <small><%= repo.description.split("\n").first %></small>
   </h1>
-  <% if Ginatra.config.git_clone_enabled? %>
-    <div id="js-clone-url" class="muted clone-hint">
-      <code>git clone <strong><%= url repo.param %></strong></code>
-    </div>
-  <% end %>
+  <div class="muted clone-hint">
+    <code id="js-clone-url1">git clone <strong><%= repo.ssh_url %></strong></code>
+    <span style="margin: 0 10px;">or</span>
+    <code id="js-clone-url2">git remote add origin <strong><%= repo.ssh_url %></strong></code>
+  </div>
 </div>
